@@ -193,7 +193,7 @@
     <Component class="javax.swing.JButton" name="aceptar">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/Assets/8-cancel.png"/>
+          <Image iconType="3" name="/Assets/08-cancel.png"/>
         </Property>
       </Properties>
       <Events>
@@ -208,7 +208,7 @@
     <Component class="javax.swing.JButton" name="cancelar">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/Assets/7-acepto.png"/>
+          <Image iconType="3" name="/Assets/07-acepto.png"/>
         </Property>
       </Properties>
       <Constraints>

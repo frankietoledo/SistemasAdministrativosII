@@ -105,7 +105,7 @@ public class NuevaCuenta extends javax.swing.JFrame {
         jComboBox2.setSelectedIndex(2);
         getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 200, -1));
 
-        aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/8-cancel.png"))); // NOI18N
+        aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/08-cancel.png"))); // NOI18N
         aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 aceptarActionPerformed(evt);
@@ -113,7 +113,7 @@ public class NuevaCuenta extends javax.swing.JFrame {
         });
         getContentPane().add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(232, 320, 80, -1));
 
-        cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/7-acepto.png"))); // NOI18N
+        cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/07-acepto.png"))); // NOI18N
         getContentPane().add(cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 210, -1));
         getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 310, 10));
         getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 310, 10));
