@@ -1,8 +1,11 @@
 package modelo;
 
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
+
+
 
 public class Asiento {
 	private int codigo;
@@ -37,5 +40,15 @@ public class Asiento {
 		this.transacciones.remove(t);
 	}
 	
+	public void save() throws SQLException{
+        
+		
+		ConexionDB con = new ConexionDB();
+        con.connect();
+        PreparedStatement st = con.getConnect().prepareStatement("insert into asientos (fecha) values (?)");
+        st.setDate(1, this.getFecha());
+        con.save(st);
+        con.close();
+    }
 
 }
