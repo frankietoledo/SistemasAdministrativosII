@@ -531,6 +531,7 @@ public class Principal extends javax.swing.JFrame {
         Asientos.repaint();
     }//GEN-LAST:event_btnAgregarFilaAsientoActionPerformed
 
+    
     private void btnBorrarFIlaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarFIlaAsientoActionPerformed
         int fila = TableAsientoNuevo.getSelectedRow();
         if (TableAsientoNuevo.getRowCount()>1 && fila!=-1){   
