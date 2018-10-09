@@ -6,11 +6,17 @@
 package Vista;
 
 import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.security.KeyStore;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import javafx.scene.input.KeyCode;
+import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -47,6 +53,8 @@ public class Principal extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         btnVolverCuentas = new javax.swing.JButton();
         btnNuevaCuenta = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel9 = new javax.swing.JLabel();
         Asientos = new javax.swing.JPanel();
         scrollpaneAsientosPrevios = new javax.swing.JScrollPane();
         TableAsientosPrevios = new javax.swing.JTable();
@@ -134,20 +142,17 @@ public class Principal extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null}
             },
             new String [] {
-                "Numero", "Nombre", "Recibe Saldo", "Tipo", "Editar", "Borrar"
+                "Numero", "Nombre", "Saldo", "Tipo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -158,9 +163,23 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTable1.setColumnSelectionAllowed(true);
+        jTable1.setRowHeight(24);
         jScrollPane1.setViewportView(jTable1);
+        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(280);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(590);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(65);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(315);
+        }
 
-        Cuentas.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1270, 620));
+        Cuentas.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 1270, 540));
 
         btnVolverCuentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/06-back.png"))); // NOI18N
         btnVolverCuentas.setText("Volver");
@@ -179,6 +198,10 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         Cuentas.add(btnNuevaCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(1121, 20, 150, 50));
+        Cuentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1260, 10));
+
+        jLabel9.setText("Falta poner algun panel donde muestre la cuenta seleccionada, junto con los botones de seleccionar y borrar, capaz sobre el mismo titulo y poner los botones al lado del boton de nueva cuenta");
+        Cuentas.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 1160, 50));
 
         getContentPane().add(Cuentas, "cuentas");
 
@@ -187,9 +210,6 @@ public class Principal extends javax.swing.JFrame {
         TableAsientosPrevios.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         TableAsientosPrevios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
                 {null, null}
             },
             new String [] {
@@ -218,9 +238,9 @@ public class Principal extends javax.swing.JFrame {
         Asientos.add(scrollpaneAsientosPrevios, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 460, 510));
 
         TableAsientoNuevo.setAutoCreateRowSorter(true);
-        TableAsientoNuevo.setModel(new javax.swing.table.DefaultTableModel(
+        TableAsientoNuevo.setModel(new DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+                {null, null, 0, 0}
             },
             new String [] {
                 "Nro Cuenta", "Concepto", "Debe", "Haber"
@@ -244,6 +264,11 @@ public class Principal extends javax.swing.JFrame {
         TableAsientoNuevo.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         TableAsientoNuevo.setColumnSelectionAllowed(true);
         TableAsientoNuevo.setRowHeight(24);
+        TableAsientoNuevo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TableAsientoNuevoFocusLost(evt);
+            }
+        });
         TableAsientoNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TableAsientoNuevoMouseClicked(evt);
@@ -259,16 +284,13 @@ public class Principal extends javax.swing.JFrame {
         });
         scrollpaneAsientoNuevo.setViewportView(TableAsientoNuevo);
         TableAsientoNuevo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        if (TableAsientoNuevo.getColumnModel().getColumnCount() > 0) {
-            TableAsientoNuevo.getColumnModel().getColumn(0).setResizable(false);
-            TableAsientoNuevo.getColumnModel().getColumn(0).setPreferredWidth(80);
-            TableAsientoNuevo.getColumnModel().getColumn(1).setResizable(false);
-            TableAsientoNuevo.getColumnModel().getColumn(1).setPreferredWidth(415);
-            TableAsientoNuevo.getColumnModel().getColumn(2).setResizable(false);
-            TableAsientoNuevo.getColumnModel().getColumn(2).setPreferredWidth(110);
-            TableAsientoNuevo.getColumnModel().getColumn(3).setResizable(false);
-            TableAsientoNuevo.getColumnModel().getColumn(3).setPreferredWidth(110);
-        }
+        TableAsientoNuevo.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        TableAsientoNuevo.setRowSelectionAllowed(false);
+        TableAsientoNuevo.setColumnSelectionAllowed(false);
+        TableAsientoNuevo.getColumnModel().getColumn(0).setPreferredWidth(90);
+        TableAsientoNuevo.getColumnModel().getColumn(1).setPreferredWidth(400);
+        TableAsientoNuevo.getColumnModel().getColumn(2).setPreferredWidth(100);
+        TableAsientoNuevo.getColumnModel().getColumn(3).setPreferredWidth(100);
 
         Asientos.add(scrollpaneAsientoNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 60, 710, 570));
 
@@ -328,6 +350,7 @@ public class Principal extends javax.swing.JFrame {
         dateDesde.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateDesde.setNothingAllowed(false);
         dateDesde.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
+        dateDesde.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         dateDesde.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
         Asientos.add(dateDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 140, 30));
 
@@ -339,7 +362,7 @@ public class Principal extends javax.swing.JFrame {
             e1.printStackTrace();
         }
         dateHasta.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
-        dateHasta.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 11));
+        dateHasta.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         Asientos.add(dateHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 140, 30));
 
         btnBorrarFIlaAsiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/12-papelera.png"))); // NOI18N
@@ -349,6 +372,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         Asientos.add(btnBorrarFIlaAsiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 180, -1, 40));
+        btnBorrarFIlaAsiento.setEnabled(false);
 
         btnAgregarFilaAsiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/13-fila.png"))); // NOI18N
         btnAgregarFilaAsiento.addActionListener(new java.awt.event.ActionListener() {
@@ -450,7 +474,22 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverCuentasActionPerformed
 
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            Date desde = dateDesde.getSelectedDate().getTime();
+            Date hasta = dateHasta.getSelectedDate().getTime();
+            
+            java.text.SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            String date1 = format1.format(desde);
+            String date2 = format1.format(hasta);
+             if (desde.before(hasta)){
+                System.err.println("Desde: "+date1+" hasta:"+date2); 
+             }else{
+                 System.err.println("Las fechas son incorrectas");
+             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //TODO generar dialog con error
+        }
     }//GEN-LAST:event_btnFiltrarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
@@ -476,30 +515,38 @@ public class Principal extends javax.swing.JFrame {
         c.show(getContentPane(), "cuentas");
     }//GEN-LAST:event_btnCuentaActionPerformed
 
-    private void TableAsientoNuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableAsientoNuevoMouseClicked
-        int fila = TableAsientoNuevo.getSelectedRow();
-        int columna = TableAsientoNuevo.getSelectedColumn();
-        if (columna==0){
-        }
-        switch(columna){
-            case 0:{
-                    System.out.println("Apreto en la columna cero");
-                    //Manejamos una busqueda en la base de datos, sea un numero o una palabra
-                    break;
-            }
-            default:break;
-        }
-    }//GEN-LAST:event_TableAsientoNuevoMouseClicked
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        DefaultTableModel dm = (DefaultTableModel)TableAsientoNuevo.getModel();
+        dm.getDataVector().removeAllElements();
+        dm.fireTableDataChanged();
+        //Esto es una negrada pero anda
+        btnAgregarFilaAsientoActionPerformed(new ActionEvent(this,
+              ActionEvent.ACTION_PERFORMED, "Hola"));
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
-    private void TableAsientoNuevoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyPressed
-        // TODO add your handling code here:
-        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        if (k.getKeyCode()==evt.getKeyCode()){
-            System.out.println("Enter presionado");
-            TableAsientoNuevo.getModel().addRow(new Object[] { null,null,null,null });
-           
+    private void btnAgregarFilaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarFilaAsientoActionPerformed
+        DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
+        tm.addRow(new Object[]{null,null,0,0});
+        TableAsientoNuevo.setModel(tm);
+        Asientos.repaint();
+    }//GEN-LAST:event_btnAgregarFilaAsientoActionPerformed
+
+    private void btnBorrarFIlaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarFIlaAsientoActionPerformed
+        int fila = TableAsientoNuevo.getSelectedRow();
+        if (TableAsientoNuevo.getRowCount()>1 && fila!=-1){   
+            DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
+            tm.removeRow(fila);
+            TableAsientoNuevo.setModel(tm);
+            Asientos.repaint();
         }
-    }//GEN-LAST:event_TableAsientoNuevoKeyPressed
+    }//GEN-LAST:event_btnBorrarFIlaAsientoActionPerformed
+
+    private void btnNuevaCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaCuentaActionPerformed
+        // TODO add your handling code here:
+        JFrame nc = new NuevaCuenta();
+        nc.setAlwaysOnTop(true);
+        nc.setVisible(true);
+    }//GEN-LAST:event_btnNuevaCuentaActionPerformed
 
     private void TableAsientoNuevoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyTyped
         // TODO add your handling code here:
@@ -508,29 +555,36 @@ public class Principal extends javax.swing.JFrame {
         TableModel modelo = TableAsientoNuevo.getModel();
         switch(columna){
             case 2:
-                modelo.setValueAt(0,fila,3);
-                break;
+            modelo.setValueAt(0,fila,3);
+            break;
             case 3:
-                modelo.setValueAt(0, fila, 2);
-                break;
+            modelo.setValueAt(0, fila, 2);
+            break;
         }
     }//GEN-LAST:event_TableAsientoNuevoKeyTyped
 
-    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+    private void TableAsientoNuevoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBorrarActionPerformed
+        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        if (k.getKeyCode()==evt.getKeyCode() && TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
+            DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
+            tm.addRow(new Object[]{null,null,0,0});
+            TableAsientoNuevo.setModel(tm);
+            Asientos.repaint();
+        }
+    }//GEN-LAST:event_TableAsientoNuevoKeyPressed
 
-    private void btnAgregarFilaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarFilaAsientoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAgregarFilaAsientoActionPerformed
+    private void TableAsientoNuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableAsientoNuevoMouseClicked
+        int fila = TableAsientoNuevo.getSelectedRow();
+        if (fila != -1){
+            btnBorrarFIlaAsiento.setEnabled(true);
+        }else{
+            btnBorrarFIlaAsiento.setEnabled(false);
+        }
+    }//GEN-LAST:event_TableAsientoNuevoMouseClicked
 
-    private void btnBorrarFIlaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarFIlaAsientoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBorrarFIlaAsientoActionPerformed
-
-    private void btnNuevaCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaCuentaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNuevaCuentaActionPerformed
+    private void TableAsientoNuevoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TableAsientoNuevoFocusLost
+    }//GEN-LAST:event_TableAsientoNuevoFocusLost
 
     
     /**
@@ -600,9 +654,11 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JLabel lblAsiento1;

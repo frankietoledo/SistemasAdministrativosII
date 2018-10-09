@@ -5,6 +5,9 @@
  */
 package Vista;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author Frank
@@ -16,8 +19,7 @@ public class NuevaCuenta extends javax.swing.JFrame {
      */
     public NuevaCuenta() {
         initComponents();
-        //Metodo2
-        System.out.println("Vista.NuevaCuenta.<init>()");
+        
     }
 
     /**
@@ -31,24 +33,32 @@ public class NuevaCuenta extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblNumeroCuenta = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        tfNombre = new javax.swing.JTextField();
+        cbRecibesaldo = new javax.swing.JCheckBox();
+        cbCuentaPadre = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        aceptar = new javax.swing.JButton();
-        cancelar = new javax.swing.JButton();
+        cbTipoCuenta = new javax.swing.JComboBox<>();
+        btnCancelarNuevaCuenta = new javax.swing.JButton();
+        btnAceptarNuevaCuenta = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sistemas Administrativos II");
         setAlwaysOnTop(true);
+        setLocation(new java.awt.Point(267, 324));
         setResizable(false);
+        setType(java.awt.Window.Type.UTILITY);
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                formFocusLost(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -60,37 +70,48 @@ public class NuevaCuenta extends javax.swing.JFrame {
         jLabel2.setText("Numero:");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, 30));
 
-        jLabel3.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel3.setText("0000");
-        jLabel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 200, -1));
+        lblNumeroCuenta.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        lblNumeroCuenta.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lblNumeroCuenta.setText("1234");
+        lblNumeroCuenta.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        getContentPane().add(lblNumeroCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 200, -1));
 
         jLabel4.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         jLabel4.setText("Nombre:");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 122, -1, 30));
 
-        jTextField1.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
-        jTextField1.setToolTipText("");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        tfNombre.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        tfNombre.setToolTipText("");
+        tfNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                tfNombreActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 200, -1));
-
-        jCheckBox1.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        jCheckBox1.setText("Recibe saldo");
-        getContentPane().add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, 160, 40));
-
-        jComboBox1.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No aplica", " " }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+        tfNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfNombreKeyTyped(evt);
             }
         });
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 290, -1));
+        getContentPane().add(tfNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 200, -1));
+
+        cbRecibesaldo.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        cbRecibesaldo.setText("Recibe saldo");
+        cbRecibesaldo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbRecibesaldoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cbRecibesaldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, 160, 40));
+
+        cbCuentaPadre.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        cbCuentaPadre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No aplica" }));
+        cbCuentaPadre.setEnabled(false);
+        cbCuentaPadre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCuentaPadreActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cbCuentaPadre, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 290, -1));
 
         jLabel5.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         jLabel5.setText("Cuenta padre:");
@@ -100,21 +121,36 @@ public class NuevaCuenta extends javax.swing.JFrame {
         jLabel6.setText("Tipo:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 80, 30));
 
-        jComboBox2.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activo", "Pasivo", "Patrimonio Neto", "Resultado +", "Resultado -" }));
-        jComboBox2.setSelectedIndex(2);
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 200, -1));
-
-        aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/08-cancel.png"))); // NOI18N
-        aceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aceptarActionPerformed(evt);
+        cbTipoCuenta.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        cbTipoCuenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Activo", "Pasivo", "Patrimonio Neto", "Resultado +", "Resultado -" }));
+        cbTipoCuenta.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbTipoCuentaItemStateChanged(evt);
             }
         });
-        getContentPane().add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(232, 320, 80, -1));
+        cbTipoCuenta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cbTipoCuentaMouseClicked(evt);
+            }
+        });
+        cbTipoCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbTipoCuentaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cbTipoCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 200, -1));
 
-        cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/07-acepto.png"))); // NOI18N
-        getContentPane().add(cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 210, -1));
+        btnCancelarNuevaCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/08-cancel.png"))); // NOI18N
+        btnCancelarNuevaCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarNuevaCuentaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnCancelarNuevaCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(232, 320, 80, -1));
+
+        btnAceptarNuevaCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/07-acepto.png"))); // NOI18N
+        btnAceptarNuevaCuenta.setEnabled(false);
+        getContentPane().add(btnAceptarNuevaCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 210, -1));
         getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 310, 10));
         getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 310, 10));
         getContentPane().add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 300, 20));
@@ -123,69 +159,120 @@ public class NuevaCuenta extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void cbCuentaPadreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCuentaPadreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_cbCuentaPadreActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void tfNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_tfNombreActionPerformed
 
-    private void aceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_aceptarActionPerformed
+    private void btnCancelarNuevaCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarNuevaCuentaActionPerformed
+        dispose();      
+                
+    }//GEN-LAST:event_btnCancelarNuevaCuentaActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-           //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NuevaCuenta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NuevaCuenta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NuevaCuenta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NuevaCuenta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void formFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusLost
+
+
+    }//GEN-LAST:event_formFocusLost
+
+    private void cbTipoCuentaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbTipoCuentaItemStateChanged
+        
+    }//GEN-LAST:event_cbTipoCuentaItemStateChanged
+
+    private void cbTipoCuentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbTipoCuentaMouseClicked
+                
+    }//GEN-LAST:event_cbTipoCuentaMouseClicked
+
+    private void cbTipoCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoCuentaActionPerformed
+        int indice = cbTipoCuenta.getSelectedIndex();
+        int valor = 0;
+        int resultado =Integer.valueOf(lblNumeroCuenta.getText());
+        switch(indice){
+            case 1:valor=1000;break;
+            case 2:valor=2000;break;
+            case 3:valor=3000;break;
+            case 4:valor=4000;break;
+            case 5:valor=5000;break;
+            default:break;
         }
-        //</editor-fold>
-        //Hola mundo
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NuevaCuenta().setVisible(true);
+        if (resultado > 0){
+            resultado = resultado%1000;   
+        }
+        if (!tfNombre.getText().trim().isEmpty() && indice>0)
+            btnAceptarNuevaCuenta.setEnabled(true);
+        else
+            btnAceptarNuevaCuenta.setEnabled(false);
+        valor += resultado;
+        lblNumeroCuenta.setText(String.valueOf(valor));
+        
+    }//GEN-LAST:event_cbTipoCuentaActionPerformed
+
+    private void cbRecibesaldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRecibesaldoActionPerformed
+        int resultado =Integer.valueOf(lblNumeroCuenta.getText());
+        if (!cbRecibesaldo.isSelected()){
+            /**TODO
+             *Si no esta seleccionado debe tener una cuenta padre y
+             *ademas bloquear el selecctor del padre
+             * TODO: Falta hacer el manejo de como garcha efecta el check al boton
+             **/
+            DefaultComboBoxModel cbm = (DefaultComboBoxModel) cbCuentaPadre.getModel();
+            cbm.removeAllElements();
+            cbm.addElement("No aplica");
+            cbCuentaPadre.setModel(cbm);
+            getContentPane().repaint();
+            
+            cbCuentaPadre.setEnabled(false);
+            int primeraMitad=0;
+            int segundaMitad=0;
+            if  (resultado != 0){
+                //TODO consulta que trae el seg digito, poner el 3ero en cero esta listo.
+                segundaMitad = resultado%10;
+                primeraMitad = resultado/100;
+                resultado=Integer.valueOf(primeraMitad+"0"+segundaMitad);
             }
-        });
-    }
+        }else{
+            //TODO hacer consulta para traer el ultimo numero y seguir la numeracion
+            DefaultComboBoxModel cbm = (DefaultComboBoxModel) cbCuentaPadre.getModel();
+            cbm.removeAllElements();
+            cbm.addElement("Seleccionar");
+            cbCuentaPadre.setModel(cbm);
+            getContentPane().repaint();
+            cbCuentaPadre.setEnabled(true);
+        }
+        lblNumeroCuenta.setText(String.valueOf(resultado));
+        
+        
+        
+    }//GEN-LAST:event_cbRecibesaldoActionPerformed
+
+    private void tfNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfNombreKeyTyped
+        // TODO add your handling code here:
+        String nombre = tfNombre.getText().trim();
+        if (!nombre.isEmpty() && cbTipoCuenta.getSelectedIndex()>0){
+            btnAceptarNuevaCuenta.setEnabled(true);
+        }else
+            btnAceptarNuevaCuenta.setEnabled(false);
+        
+    }//GEN-LAST:event_tfNombreKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton aceptar;
-    private javax.swing.JButton cancelar;
+    private javax.swing.JButton btnAceptarNuevaCuenta;
+    private javax.swing.JButton btnCancelarNuevaCuenta;
+    private javax.swing.JComboBox<String> cbCuentaPadre;
+    private javax.swing.JCheckBox cbRecibesaldo;
+    private javax.swing.JComboBox<String> cbTipoCuenta;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblNumeroCuenta;
+    private javax.swing.JTextField tfNombre;
     // End of variables declaration//GEN-END:variables
 }
