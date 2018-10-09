@@ -29,6 +29,14 @@ public class Transaccion {
 		this.monto = monto;
 	}
 	
+	public void setAsiento (Asiento a) {
+		this.asiento = a;
+	}
+	public Asiento getAsiento() {
+		return this.asiento;
+	}
+	
+	
 	//para guardar en la db
 	public void save(int id) throws SQLException{
 		ConexionDB con = new ConexionDB();
