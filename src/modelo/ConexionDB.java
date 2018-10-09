@@ -46,7 +46,7 @@ public class ConexionDB {
 	public void mostrarAsientosPor(Date fechaInicio, Date fechaFin) {
 		ResultSet result = null;
 		try {
-            PreparedStatement st = connect.prepareStatement("select * from asientos natural join transacciones where date between ? and ?");
+            PreparedStatement st = connect.prepareStatement("select * from asientos natural join transacciones where asientos.fecha between ? and ?");
             st.setDate(1,fechaInicio);
             st.setDate(2, fechaFin);
             result = st.executeQuery();

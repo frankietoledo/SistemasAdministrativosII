@@ -7,7 +7,7 @@ public class Transaccion {
 	private boolean esDebe;
 	private Cuenta cuenta;
 	private float monto;
-	private Asiento idAsiento;
+	private Asiento asiento;
 	
 	
 	public boolean isEsDebe() {
@@ -30,13 +30,14 @@ public class Transaccion {
 	}
 	
 	//para guardar en la db
-	public void save() throws SQLException{
+	public void save(int id) throws SQLException{
 		ConexionDB con = new ConexionDB();
         con.connect();
         PreparedStatement st = con.getConnect().prepareStatement("insert into transacciones (esDebe, cuenta, monto, idAsiento) values (?,?,?,?)");
-        st.setBoolean(1, this.esDebe);
-        st.setInt(2, cuenta.getNumero());
-        st.setFloat(3, this.monto);
+        st.setInt(1, cuenta.getNumero());
+        st.setFloat(2, this.monto);
+        st.setBoolean(3, this.esDebe);
+        st.setInt(4, id);
         con.save(st);
         con.close();
     }
