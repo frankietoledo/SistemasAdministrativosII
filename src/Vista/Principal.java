@@ -23,6 +23,8 @@ import javax.swing.KeyStroke;
 import javax.swing.table.TableModel;
 import javax.swing.table.DefaultTableModel;
 import modelo.ConexionDB;
+import modelo.PopUp;
+import modelo.ConexionDB;
 
 /**
  *
@@ -474,22 +476,28 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverCuentasActionPerformed
 
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
+                                     
+               
         try {
             Date desde = dateDesde.getSelectedDate().getTime();
             Date hasta = dateHasta.getSelectedDate().getTime();
             
-            java.text.SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            java.text.SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
             String date1 = format1.format(desde);
             String date2 = format1.format(hasta);
              if (desde.before(hasta)){
                 System.err.println("Desde: "+date1+" hasta:"+date2); 
+                consultarDesdeHasta(date1, date2);
              }else{
+                 PopUp.warningBox("Orden de fechas incorrecto", "Problema con la fecha");
                  System.err.println("Las fechas son incorrectas");
              }
         } catch (Exception e) {
             e.printStackTrace();
             //TODO generar dialog con error
         }
+        
+        
     }//GEN-LAST:event_btnFiltrarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
@@ -699,6 +707,29 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollpaneAsientoNuevo;
     private javax.swing.JScrollPane scrollpaneAsientosPrevios;
     // End of variables declaration//GEN-END:variables
+
+    private void consultarDesdeHasta(String date1, String date2) throws SQLException {
+             
+        try{
+            ConexionDB conn = new modelo.ConexionDB();
+            conn.connect();
+            ResultSet rs = conn.mostrarAsientosPor(date1, date2);
+            DefaultTableModel dm= (DefaultTableModel) TableAsientosPrevios.getModel();
+            dm.getDataVector().removeAllElements();
+            dm.fireTableDataChanged();   
+            while (rs.next()){
+                dm.addRow(new Object[]{rs.getString("idAsiento"),rs.getString("fecha")});
+                
+            }
+            TableAsientosPrevios.setModel(dm);
+            Asientos.repaint();
+            conn.close();
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+        }
+        
+        
+    }
 
     private void llenarCuentas() {
         ResultSet rs;

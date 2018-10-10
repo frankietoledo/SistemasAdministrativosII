@@ -5,6 +5,7 @@ import java.sql.*;
 public class ConexionDB {
 	//private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII";
 	private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
+	private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII/sa2.db";
 	public Connection connect;
 	
 	public void connect(){
@@ -44,20 +45,19 @@ public class ConexionDB {
 	
 	
 	//busca asientos entre 2 fechas
-	public void mostrarAsientosPor(Date fechaInicio, Date fechaFin) {
-		ResultSet result = null;
-		try {
-            PreparedStatement st = connect.prepareStatement("select * from asientos natural join transacciones where asientos.fecha between ? and ?");
-            st.setDate(1,fechaInicio);
-            st.setDate(2, fechaFin);
-            result = st.executeQuery();
-            while (result.next()) {
-                //to do mostrar o mandar al return...
-            	
+	public ResultSet mostrarAsientosPor(String fechaInicio, String fechaFin) {
+            ResultSet result = null;
+            try {
+                PreparedStatement st = connect.prepareStatement("select * from asientos where asientos.fecha between ? and ?");//
+                st.setString(1,fechaInicio);
+                st.setString(2, fechaFin);
+                result = st.executeQuery();
+
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+
             }
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-        }
+            return result;    
 	}
 	
 	//busco las cuentas para mostrar info
