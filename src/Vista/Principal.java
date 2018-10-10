@@ -12,10 +12,13 @@ import java.security.KeyStore;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyCode;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -25,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import modelo.ConexionDB;
 import modelo.PopUp;
 import modelo.ConexionDB;
+import Vista.ReporteMayores;
 
 /**
  *
@@ -32,13 +36,15 @@ import modelo.ConexionDB;
  */
 public class Principal extends javax.swing.JFrame {
 
+    private ArrayList<Integer> codCuentas = new ArrayList<>();
+
     /**
      * Creates new form Principal
      */
     public Principal() {
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -88,7 +94,7 @@ public class Principal extends javax.swing.JFrame {
         dateChooserCombo1 = new datechooser.beans.DateChooserCombo();
         dateChooserCombo2 = new datechooser.beans.DateChooserCombo();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TableMayores = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -351,8 +357,8 @@ public class Principal extends javax.swing.JFrame {
 
         dateDesde.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateDesde.setNothingAllowed(false);
-        dateDesde.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
-        dateDesde.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateDesde.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        dateDesde.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         dateDesde.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
         Asientos.add(dateDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 140, 30));
 
@@ -363,8 +369,8 @@ public class Principal extends javax.swing.JFrame {
         } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
             e1.printStackTrace();
         }
-        dateHasta.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
-        dateHasta.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateHasta.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        dateHasta.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Asientos.add(dateHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 140, 30));
 
         btnBorrarFIlaAsiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/12-papelera.png"))); // NOI18N
@@ -416,30 +422,27 @@ public class Principal extends javax.swing.JFrame {
 
         dateChooserCombo1.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo1.setNothingAllowed(false);
-        dateChooserCombo1.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateChooserCombo1.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 130, -1, 30));
 
         dateChooserCombo2.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo2.setNothingAllowed(false);
-        dateChooserCombo2.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateChooserCombo2.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, -1, 30));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TableMayores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Codigo", "Cuenta", "Mayor"
+                "Mayor", "Codigo", "Cuenta", "Tipo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -450,13 +453,29 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        TableMayores.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane2.setViewportView(TableMayores);
+        if (TableMayores.getColumnModel().getColumnCount() > 0) {
+            TableMayores.getColumnModel().getColumn(0).setResizable(false);
+            TableMayores.getColumnModel().getColumn(0).setPreferredWidth(80);
+            TableMayores.getColumnModel().getColumn(1).setResizable(false);
+            TableMayores.getColumnModel().getColumn(1).setPreferredWidth(200);
+            TableMayores.getColumnModel().getColumn(2).setResizable(false);
+            TableMayores.getColumnModel().getColumn(2).setPreferredWidth(500);
+            TableMayores.getColumnModel().getColumn(3).setResizable(false);
+            TableMayores.getColumnModel().getColumn(3).setPreferredWidth(450);
+        }
 
         Mayores.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 1250, 450));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/11-pdf.png"))); // NOI18N
-        jButton1.setText(" Generar PDF");
-        Mayores.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 640, -1, -1));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/09-editar16.png"))); // NOI18N
+        jButton1.setText(" Generar Informe");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        Mayores.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 650, -1, -1));
 
         getContentPane().add(Mayores, "mayores");
 
@@ -467,12 +486,14 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         CardLayout c = (CardLayout)getContentPane().getLayout();
         c.show(getContentPane(), "mayores");
+        mostrarLasCuentas();
     }//GEN-LAST:event_btnMayoresActionPerformed
 
     private void btnVolverCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverCuentasActionPerformed
         // TODO add your handling code here:
         CardLayout c = (CardLayout)getContentPane().getLayout();
         c.show(getContentPane(), "inicio");
+        
     }//GEN-LAST:event_btnVolverCuentasActionPerformed
 
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
@@ -626,6 +647,31 @@ public class Principal extends javax.swing.JFrame {
     private void TableAsientoNuevoPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_TableAsientoNuevoPropertyChange
         
     }//GEN-LAST:event_TableAsientoNuevoPropertyChange
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:tengo q ver cuales estan tildadas
+               
+        for (int i = 0; i < TableMayores.getRowCount(); i++) {        
+            try {
+                Boolean isChecked = Boolean.valueOf(TableMayores.getValueAt(i, 0).toString());
+                if (isChecked) {
+                    //System.err.println("La fila "+i+" TRUE");
+                    codCuentas.add(Integer.valueOf(TableMayores.getValueAt(i, 1).toString()));
+                    //get the values of the columns you need.
+                } else {
+                    //System.err.println("La fila "+i+" esta por defecto");
+                    //System.out.printf("Row %s is not checked \n", i);
+                }
+                //codCuentas.add((int) TableMayores.getValueAt(i, 1));
+                //System.out.println("Codigo: "+TableMayores.getValueAt(i, 1));
+                //if (Boolean.valueOf(TableMayores.getValueAt(i, 0).toString()))
+                   // System.err.println("Codigo: "+TableMayores.getValueAt(i, 1));
+            } catch (Exception e) {
+                System.err.println("Se encontro un nulo al buscar un boolean"+TableMayores.getValueAt(i,1));
+            }
+        }
+        armarMayores(codCuentas);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     
     /**
@@ -670,6 +716,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTable TableAsientoNuevo;
     private javax.swing.JTable TableAsientosPrevios;
     private javax.swing.JTable TableCuentas;
+    private javax.swing.JTable TableMayores;
     private javax.swing.JButton btnAgregarFilaAsiento;
     private javax.swing.JButton btnAsiento;
     private javax.swing.JButton btnBorrar;
@@ -699,7 +746,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lblAsiento1;
     private javax.swing.JLabel lblHasta;
     private javax.swing.JLabel lblNuevoAsiento;
@@ -735,11 +781,10 @@ public class Principal extends javax.swing.JFrame {
         ResultSet rs;
         try {
             ConexionDB conn = new ConexionDB();
-            conn.connect();
+            conn.connect();            
             rs = conn.todasLasCuentas();
             DefaultTableModel tm = (DefaultTableModel) TableCuentas.getModel();
             tm.removeRow(0);
-            conn.close();
             while (rs.next()) {
                 tm.addRow(new Object[]{
                     rs.getString("codigoCS"),
@@ -748,15 +793,14 @@ public class Principal extends javax.swing.JFrame {
                     rs.getString("tipo")}
                 );
             }
-            TableCuentas.setModel(tm);
-            Cuentas.repaint();
-            
-            
             conn.close();
+            TableCuentas.setModel(tm);
+            Cuentas.repaint();             
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Algo salio mal, problema con la BD");
         }
+        
     }
 
     private void obtenerCuentaDe(String tf) {
@@ -779,5 +823,92 @@ public class Principal extends javax.swing.JFrame {
             resultado = false;
         }
         return resultado;
+    }
+
+    /*Quique*/
+    private void mostrarLasCuentas() {
+        ResultSet rs;
+        try {
+            ConexionDB conn = new ConexionDB();
+            conn.connect();
+            rs = conn.todasLasCuentas();
+            DefaultTableModel tm = (DefaultTableModel) TableMayores.getModel();
+            tm.getDataVector().removeAllElements();
+            tm.fireTableDataChanged();
+            while (rs.next()) {
+                tm.addRow(new Object[]{
+                    false,
+                    rs.getString("codigoCS"),
+                    rs.getString("nombre"),
+                    rs.getString("tipo")}
+                );
+            }
+            conn.close();
+            TableMayores.setModel(tm);
+            Mayores.repaint();
+            
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Algo salio mal, problema con la BD");
+        }
+    }
+
+    private void armarMayores(ArrayList<Integer> codCuentas2) {
+        ReporteMayores repoM= new ReporteMayores();
+        ResultSet rs;
+        String text = "";
+        for (Integer i:codCuentas2){
+            float montoAcumulado= 0;
+            boolean negar = false;
+            
+            try {
+                
+                ConexionDB cn = new ConexionDB();
+                cn.connect();
+                rs = cn.generarMayor(i);
+                if(rs.next()){
+                    repoM.getjText().append("____________________________________\n");
+                    repoM.getjText().append("    Cuenta: "+rs.getString("nombre")+" ("+rs.getString("codigoCS")+")\n");
+                    repoM.getjText().append("____________________________________\n");
+                    repoM.getjText().append("\n");
+                    
+                    negar = (rs.getString("tipo").equals("Pasivo") ||
+                                      rs.getString("tipo").equals("Patrimonio Neto"));
+                    do{
+                        if(rs.getBoolean("esDebe") ){
+                            text = rs.getString("valor"+"|                          ")+"\n";
+                            System.out.println(text+"\n");
+                            if (negar){
+                                montoAcumulado -= rs.getFloat("valor");
+                            }else{
+                                montoAcumulado += rs.getFloat("valor");
+                            }
+                        }else{
+                            text = "                          |"+rs.getString("valor")+"\n";
+                            System.out.println(text);
+                            if (negar){
+                                montoAcumulado += rs.getFloat("valor");
+                            }else{
+                                montoAcumulado -= rs.getFloat("valor");
+                                }    
+                        }
+                        repoM.getjText().append(text);
+                    }while(rs.next());
+                }
+                
+                cn.close();
+            }catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            System.out.println("____________________________________\n");
+            System.out.println(""+montoAcumulado+"\n");
+            repoM.getjText().append("----------------------------------------------\n");
+            repoM.getjText().append("    "+String.valueOf(montoAcumulado));
+            repoM.getjText().append("\n\n");
+            System.out.println("\n\n");
+        }
+        repoM.setVisible(true);
     }
 }

@@ -3,8 +3,7 @@ package modelo;
 import java.sql.*;
 
 public class ConexionDB {
-	//private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII";
-	private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
+	//private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
 	private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII/sa2.db";
 	public Connection connect;
 	
@@ -90,14 +89,28 @@ public class ConexionDB {
 		return result;
 	}
         public ResultSet todasLasCuentas() {
-		ResultSet result = null;
-		try {
-			String sql = "select * from cuentasSimples";
-			PreparedStatement st = connect.prepareStatement(sql);
-                        result = st.executeQuery();
-		}catch (SQLException ex) {
-			System.err.println(ex.getMessage());
-		}
-		return result;
+            ResultSet result = null;
+            try {
+                    String sql = "select * from cuentasSimples";
+                    PreparedStatement st = connect.prepareStatement(sql);
+                    result = st.executeQuery();
+
+            }catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+            
+            return result;
 	}
+      public ResultSet generarMayor(int codigoCuenta){
+          ResultSet result = null;
+          try {
+              String sql = "select * from cuentasSimples natural join (asientos natural join transacciones) where cuentasSimples.codigoCS = ?";
+              PreparedStatement st = connect.prepareStatement(sql);
+              st.setInt(1, codigoCuenta);
+              result = st.executeQuery();
+          } catch (Exception e) {
+              System.err.println(e.getMessage());
+          }
+          return result;
+      }
 }

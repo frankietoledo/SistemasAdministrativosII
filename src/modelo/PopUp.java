@@ -14,10 +14,12 @@ import javax.swing.JOptionPane;
 
 public class PopUp
 {
-
+    public static void InfoBox(String infoMessage, String titleBar){
+        JOptionPane.showMessageDialog(null, infoMessage,titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
     public static void warningBox(String infoMessage, String titleBar)
     {
-        JOptionPane.showMessageDialog(null, infoMessage, "Error: " + titleBar, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, infoMessage,titleBar, JOptionPane.ERROR_MESSAGE);
     }
 }         
 
