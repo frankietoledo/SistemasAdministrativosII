@@ -1,7 +1,7 @@
 
 /*mayorean en caja y bancos 110*/
 INSERT INTO cuentasSimples (nombre,tipo, monto, codigoCS, recibeSaldo, idMayor)
-VALUES ("Caja", "Activo", 0,100,0, 0);
+VALUES ("Activo", "Activo", 0,100,0, 0);
 
 
 /*mayorean en caja y bancos 110*/
@@ -41,7 +41,7 @@ VALUES ("Inmuebles", "Activo", 0,141,1,140);
 INSERT INTO cuentasSimples (nombre,tipo, monto, codigoCS, recibeSaldo, idMayor)
 VALUES ("Rodados", "Activo", 0,142,1,140);
 INSERT INTO cuentasSimples (nombre,tipo, monto, codigoCS, recibeSaldo, idMayor)
-VALUES ("InstalActivoiones", "Activo", 0,143,1,140);
+VALUES ("Instalaciones", "Activo", 0,143,1,140);
 
 
 /*arrancan los pasivos*/

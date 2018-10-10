@@ -9,12 +9,12 @@ CREATE TABLE asientos (
 
 CREATE TABLE transacciones (
 	idTransaccion	INTEGER PRIMARY KEY ASC, /*esto seria un alias*/
-	cuenta		INTEGER NOT NULL,
-	monto		FLOAT   NOT NULL,
+	idCuenta	INTEGER NOT NULL,
+	valor		FLOAT   NOT NULL,
 	esDebe		BOOL    NOT NULL,
 	idAsiento	INTEGER NOT NULL,
 
-	CONSTRAINT cuenta_fk FOREIGN KEY (cuenta) REFERENCES cuentasSimples(idCuenta) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT cuenta_fk FOREIGN KEY (idCuenta) REFERENCES cuentasSimples(idCuenta) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT idAsiento_fk FOREIGN KEY (idAsiento) REFERENCES asientos(idAsiento) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
