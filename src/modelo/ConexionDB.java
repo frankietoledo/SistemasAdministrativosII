@@ -63,9 +63,9 @@ public class ConexionDB {
 	public ResultSet buscarCuentasPor(String nombre) {
 		ResultSet result = null;
 		try {
-			String sql = "select * from cuentas where cuenta.nombre like ?";
+			String sql = "select * from cuentasSimples where cuentasSimples.nombre like ?";
 			PreparedStatement stmt = connect.prepareStatement(sql);
-			stmt.setString(1, nombre);
+			stmt.setString(1,'%'+nombre+'%');
 			result = stmt.executeQuery();
 			
 		}catch (SQLException ex) {
@@ -78,7 +78,7 @@ public class ConexionDB {
 	public ResultSet buscarCuentasPor(int codigo) {
 		ResultSet result = null;
 		try {
-			String sql = "select from cuentas where cuenta.idCuenta = ?";
+			String sql = "select * from cuentasSimples where cuentasSimples.codigoCS = ?";
 			PreparedStatement st = connect.prepareStatement(sql);
 			st.setInt(1, codigo);
                         result = st.executeQuery();

@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -590,36 +591,13 @@ public class Principal extends javax.swing.JFrame {
 
     private void TableAsientoNuevoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyPressed
         KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        String dato="";
-        //TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1
         if (k.getKeyCode()==evt.getKeyCode()){
-            /*if (TableAsientoNuevo.getSelectedColumn()==0){
-                //dato=(String) TableAsientoNuevo.getValueAt(TableAsientoNuevo.getSelectedRow(),0);
-                //System.err.println("Dato: "+dato);
-                int i = TableAsientoNuevo.getSelectedRow();
-                String a,b,c;
-                a="";
-                b="";
-                c="";
-                try {
-                    a=(String) TableAsientoNuevo.getModel().getValueAt(i-1,0);
-                    b=(String) TableAsientoNuevo.getModel().getValueAt(i,0);
-                    c=(String) TableAsientoNuevo.getModel().getValueAt(i+1,0);
-                } catch (Exception e) {
-                    System.err.println("Problema al castear");
-                }
-                System.err.println("row-1: "+a);
-                System.err.println("row: "+b);
-                System.err.println("row+1: "+c);      
-                
-            }else{*/
-                if (TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
-                    DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
-                    tm.addRow(new Object[]{null,null,0,0});
-                    TableAsientoNuevo.setModel(tm);
-                    Asientos.repaint();
-                }
-            //}
+            if (TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
+                DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
+                tm.addRow(new Object[]{null,null,0,0});
+                TableAsientoNuevo.setModel(tm);
+                Asientos.repaint();
+            }
         }        
     }//GEN-LAST:event_TableAsientoNuevoKeyPressed
 
@@ -639,8 +617,13 @@ public class Principal extends javax.swing.JFrame {
         KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         String dato;
         if (TableAsientoNuevo.getSelectedColumn()==0 && k.getKeyCode()==evt.getKeyCode()){
-            dato=(String) TableAsientoNuevo.getValueAt(TableAsientoNuevo.getSelectedRow()-1,0);
-            System.err.println("Dato: "+dato);
+            int index;
+            if (TableAsientoNuevo.getSelectedRow()==0)
+                index=0;
+            else
+                index=TableAsientoNuevo.getSelectedRow()-1;
+            dato=(String) TableAsientoNuevo.getValueAt(index,0);
+            obtenerCuentaDe(dato);
         }
     }//GEN-LAST:event_TableAsientoNuevoKeyReleased
 
@@ -784,6 +767,8 @@ public class Principal extends javax.swing.JFrame {
             conn.connect();            
             rs = conn.todasLasCuentas();
             DefaultTableModel tm = (DefaultTableModel) TableCuentas.getModel();
+            tm.getDataVector().removeAllElements();
+            tm.fireTableDataChanged();
             tm.removeRow(0);
             while (rs.next()) {
                 tm.addRow(new Object[]{
@@ -795,6 +780,7 @@ public class Principal extends javax.swing.JFrame {
             }
             conn.close();
             TableCuentas.setModel(tm);
+            Cuentas.repaint();            
             Cuentas.repaint();             
         } catch (Exception e) {
             e.printStackTrace();
@@ -805,12 +791,42 @@ public class Principal extends javax.swing.JFrame {
 
     private void obtenerCuentaDe(String tf) {
         String dato = tf.trim();
+        HashMap<Integer,Object[]> miMapa = new HashMap<>();
         int numero = 0;
-        if (isNumeric(dato) == true) {
-            numero = Integer.parseInt(dato);
-            System.out.println("Numero: " + numero);
-        } else {
-            System.out.println("No es un numero");
+        int fila, columna;
+        fila = TableAsientoNuevo.getSelectedRow()-1;
+        columna= TableAsientoNuevo.getSelectedColumn();
+        ResultSet rs;
+        boolean empty=true;
+        try {
+            ConexionDB cn = new ConexionDB();
+            cn.connect();
+            if (isNumeric(dato) == true) {
+                numero = Integer.parseInt(dato);
+                rs=cn.buscarCuentasPor(numero);
+            } else {
+                rs=cn.buscarCuentasPor(dato);
+            }
+            while(rs.next()){
+                empty=false;
+                //hashMap.put(1, "One");
+                miMapa.put(rs.getRow(),new Object[]{
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("codigoCS"),
+                    rs.getBoolean("recibeSaldo")
+                });
+            }
+            if (empty){
+                System.err.println("Disparar Dialog de 'sin resultados' ");
+            }else{
+                SeleccionarCuenta sc = new SeleccionarCuenta();
+                sc.setAlwaysOnTop(true);
+                sc.cargarModeloTabla(miMapa,this,fila,columna);
+                sc.setVisible(true);
+            }
+        } catch (Exception e) {
+            
         }
     }
     
@@ -823,6 +839,17 @@ public class Principal extends javax.swing.JFrame {
             resultado = false;
         }
         return resultado;
+    }
+
+    void notificar(boolean b, int fila, int columna) {
+        TableAsientoNuevo.setValueAt(null,fila,columna);
+        System.err.println("Volvio con false");
+    }
+
+    void notificar(boolean b, String concepto, String codigo, int fila, int columna) {
+        TableAsientoNuevo.setValueAt(codigo, fila, columna);
+        TableAsientoNuevo.setValueAt(concepto, fila, columna+1);
+        System.err.println("Volvio con true");
     }
 
     /*Quique*/
