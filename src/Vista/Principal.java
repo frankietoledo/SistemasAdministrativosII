@@ -11,10 +11,14 @@ import java.awt.event.KeyEvent;
 import java.security.KeyStore;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.input.KeyCode;
@@ -26,12 +30,18 @@ import javax.swing.table.DefaultTableModel;
 import modelo.ConexionDB;
 import modelo.PopUp;
 import modelo.ConexionDB;
+import modelo.Asiento;
+import modelo.Transaccion;
 
 /**
  *
  * @author Frank
  */
 public class Principal extends javax.swing.JFrame {
+
+    List<Integer> eliminar = new ArrayList<>();
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
 
     /**
      * Creates new form Principal
@@ -235,7 +245,7 @@ public class Principal extends javax.swing.JFrame {
         TableAsientoNuevo.setAutoCreateRowSorter(true);
         TableAsientoNuevo.setModel(new DefaultTableModel(
             new Object [][] {
-                {null, null, 0, 0}
+                {"","", 0, 0}
             },
             new String [] {
                 "Nro Cuenta", "Concepto", "Debe", "Haber"
@@ -340,6 +350,11 @@ public class Principal extends javax.swing.JFrame {
 
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/07-acepto.png"))); // NOI18N
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
         Asientos.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 640, 430, -1));
 
         btnFiltrar.setText("Filtrar");
@@ -487,11 +502,9 @@ public class Principal extends javax.swing.JFrame {
             String date1 = format1.format(desde);
             String date2 = format1.format(hasta);
              if (desde.before(hasta)){
-                System.err.println("Desde: "+date1+" hasta:"+date2); 
                 consultarDesdeHasta(date1, date2);
              }else{
                  PopUp.warningBox("Orden de fechas incorrecto", "Problema con la fecha");
-                 System.err.println("Las fechas son incorrectas");
              }
         } catch (Exception e) {
             e.printStackTrace();
@@ -535,7 +548,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnAgregarFilaAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarFilaAsientoActionPerformed
         DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
-        tm.addRow(new Object[]{null,null,0,0});
+        tm.addRow(new Object[]{"","",0,0});
         TableAsientoNuevo.setModel(tm);
         Asientos.repaint();
     }//GEN-LAST:event_btnAgregarFilaAsientoActionPerformed
@@ -573,7 +586,7 @@ public class Principal extends javax.swing.JFrame {
         if (k.getKeyCode()==evt.getKeyCode()){
             if (TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
                 DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
-                tm.addRow(new Object[]{null,null,0,0});
+                tm.addRow(new Object[]{"","",0,0});
                 TableAsientoNuevo.setModel(tm);
                 Asientos.repaint();
             }
@@ -601,14 +614,70 @@ public class Principal extends javax.swing.JFrame {
                 index=0;
             else
                 index=TableAsientoNuevo.getSelectedRow()-1;
-            dato=(String) TableAsientoNuevo.getValueAt(index,0);
-            obtenerCuentaDe(dato);
+            
+            //dato=(String) TableAsientoNuevo.getValueAt(index,0);
+            dato=String.valueOf(TableAsientoNuevo.getValueAt(index,0));
+            if (!dato.isEmpty())
+                obtenerCuentaDe(dato);
         }
     }//GEN-LAST:event_TableAsientoNuevoKeyReleased
 
     private void TableAsientoNuevoPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_TableAsientoNuevoPropertyChange
         
     }//GEN-LAST:event_TableAsientoNuevoPropertyChange
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        float debe,haber,aux,auxplus;
+        debe=0.0f;
+        haber=0.0f;
+        String msj="";
+        eliminar.clear();
+        for (int i=0; i<TableAsientoNuevo.getRowCount();i++){
+            try {
+                aux=Float.valueOf(TableAsientoNuevo.getValueAt(i, 2).toString());
+                auxplus=Float.valueOf(TableAsientoNuevo.getValueAt(i, 3).toString());
+                if ( (aux==0.0f && auxplus==0.0f) || TableAsientoNuevo.getValueAt(i, 0).toString().isEmpty()){
+                    eliminar.add(i);
+                }else{
+                    if (aux==0.0f){
+                        haber+=auxplus;
+                    }else{
+                        debe+=aux;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (debe==haber && debe!=0.0f){
+            //TODO mandar a cargar los asientos
+            guardarTransacciones();
+        }else{
+            if (debe==0.0f && haber==0.0f)
+                msj="No podes cargar asientos vacios";
+            if (debe<haber)
+                msj="El debe es menor que el haber";
+            if (haber<debe)
+                msj="El haber es menor que el debe";
+            
+            PopUp.warningBox(msj, "Ordenate un poco");
+        }
+        if (eliminar.size()>1){
+            DefaultTableModel modelo = (DefaultTableModel) TableAsientoNuevo.getModel();
+            int del=1;
+            for (int e=0;e<eliminar.size();e++){
+                modelo.removeRow(eliminar.get(e));
+                    if(e<eliminar.size()-1){
+                        eliminar.set(e+1,eliminar.get(e+1-del));
+                        del = del+1;
+                    }
+            }
+            modelo.addRow(new Object[]{"","",0,0});
+            TableAsientoNuevo.setModel(modelo);
+            Asientos.repaint();
+        }
+        
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     
     /**
@@ -736,7 +805,6 @@ public class Principal extends javax.swing.JFrame {
             Cuentas.repaint();            
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Algo salio mal, problema con la BD");
         }
     }
 
@@ -769,7 +837,8 @@ public class Principal extends javax.swing.JFrame {
                 });
             }
             if (empty){
-                System.err.println("Disparar Dialog de 'sin resultados' ");
+                PopUp.warningBox("No hay resultados", "Busqueda vacia");
+                TableAsientoNuevo.setValueAt("", fila, columna);
             }else{
                 SeleccionarCuenta sc = new SeleccionarCuenta();
                 sc.setAlwaysOnTop(true);
@@ -794,12 +863,44 @@ public class Principal extends javax.swing.JFrame {
 
     void notificar(boolean b, int fila, int columna) {
         TableAsientoNuevo.setValueAt(null,fila,columna);
-        System.err.println("Volvio con false");
     }
 
     void notificar(boolean b, String concepto, String codigo, int fila, int columna) {
         TableAsientoNuevo.setValueAt(codigo, fila, columna);
         TableAsientoNuevo.setValueAt(concepto, fila, columna+1);
-        System.err.println("Volvio con true");
+    }
+
+    private void guardarTransacciones() {
+        java.util.Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Asiento asiento1  = new Asiento(1,sdf.format(date));
+        
+        
+        //cod, nombre, debe, haber
+        for (int i=0; i<TableAsientoNuevo.getRowCount()-1;i++){
+            Transaccion t1 = new Transaccion();
+            try {
+                int codigo = Integer.valueOf((TableAsientoNuevo.getValueAt(i, 0).toString()));
+                ConexionDB cn = new ConexionDB();
+                cn.connect();
+                ResultSet rs = cn.buscarCuentasPor(codigo);
+                t1.setCuenta(rs.getInt("IdCuenta")); 
+                cn.close();
+                String nombre =  TableAsientoNuevo.getValueAt(i, 1).toString();
+                float debe=Float.valueOf(TableAsientoNuevo.getValueAt(i, 2).toString());
+                float haber=Float.valueOf(TableAsientoNuevo.getValueAt(i, 3).toString());
+                if (debe==0.0f){
+                    t1.setEsDebe(false);
+                    t1.setMonto(haber);
+                }else{
+                    t1.setEsDebe(true);
+                    t1.setMonto(debe);
+                }
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            asiento1.addTransaccion(t1);
+        }
     }
 }

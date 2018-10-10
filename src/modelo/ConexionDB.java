@@ -3,9 +3,8 @@ package modelo;
 import java.sql.*;
 
 public class ConexionDB {
-	//private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII";
 	private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
-	private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII/sa2.db";
+	//private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII/sa2.db";
 	public Connection connect;
 	
 	public void connect(){

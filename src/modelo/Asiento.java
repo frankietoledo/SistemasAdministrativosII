@@ -9,20 +9,24 @@ import java.sql.PreparedStatement;
 
 public class Asiento {
 	private int codigo;
-	private Date fecha;
-	private List<Transaccion> transacciones = new ArrayList<Transaccion>();
+	private String fecha;
+	private List<Transaccion> transacciones;
 	
-	
+	public Asiento(int cod, String fecha1){
+            transacciones = new ArrayList<Transaccion>();
+            codigo = cod;
+            this.fecha = fecha1;
+        }
 	public int getCodigo() {
 		return codigo;
 	}
 	public void setCodigo(int codigo) {
 		this.codigo = codigo;
 	}
-	public Date getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 	public List<Transaccion> getTransacciones() {
@@ -51,7 +55,7 @@ public class Asiento {
             //guardar el idAsiento que recien guarde
             String sql = "SELECT last_insert_rowid()";
             PreparedStatement stId = con.getConnect().prepareStatement(sql);
-            int idAsiento =  stId.executeQuery().getInt(1);
+            int idAsiento = stId.executeQuery().getInt("idAsiento");
             //en teoria deberia tener el idAsiento del asiento recien guadado
             con.close();
             for (Transaccion t:this.transacciones) {
