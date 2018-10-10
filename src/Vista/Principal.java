@@ -9,14 +9,20 @@ import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.security.KeyStore;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.input.KeyCode;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableModel;
 import javax.swing.table.DefaultTableModel;
+import modelo.ConexionDB;
 
 /**
  *
@@ -50,11 +56,9 @@ public class Principal extends javax.swing.JFrame {
         Cuentas = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableCuentas = new javax.swing.JTable();
         btnVolverCuentas = new javax.swing.JButton();
-        btnNuevaCuenta = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
-        jLabel9 = new javax.swing.JLabel();
         Asientos = new javax.swing.JPanel();
         scrollpaneAsientosPrevios = new javax.swing.JScrollPane();
         TableAsientosPrevios = new javax.swing.JTable();
@@ -138,9 +142,9 @@ public class Principal extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Cuentas");
         jLabel1.setToolTipText("");
-        Cuentas.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 11, 910, 60));
+        Cuentas.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 10, 1150, 60));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableCuentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null}
             },
@@ -163,23 +167,23 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jTable1.setColumnSelectionAllowed(true);
-        jTable1.setRowHeight(24);
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(280);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(590);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(65);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(315);
+        TableCuentas.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        TableCuentas.setColumnSelectionAllowed(true);
+        TableCuentas.setRowHeight(24);
+        jScrollPane1.setViewportView(TableCuentas);
+        TableCuentas.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (TableCuentas.getColumnModel().getColumnCount() > 0) {
+            TableCuentas.getColumnModel().getColumn(0).setResizable(false);
+            TableCuentas.getColumnModel().getColumn(0).setPreferredWidth(280);
+            TableCuentas.getColumnModel().getColumn(1).setResizable(false);
+            TableCuentas.getColumnModel().getColumn(1).setPreferredWidth(590);
+            TableCuentas.getColumnModel().getColumn(2).setResizable(false);
+            TableCuentas.getColumnModel().getColumn(2).setPreferredWidth(65);
+            TableCuentas.getColumnModel().getColumn(3).setResizable(false);
+            TableCuentas.getColumnModel().getColumn(3).setPreferredWidth(315);
         }
 
-        Cuentas.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 1270, 540));
+        Cuentas.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 1270, 610));
 
         btnVolverCuentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/06-back.png"))); // NOI18N
         btnVolverCuentas.setText("Volver");
@@ -189,19 +193,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         Cuentas.add(btnVolverCuentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 110, 50));
-
-        btnNuevaCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/05-add.png"))); // NOI18N
-        btnNuevaCuenta.setText("Nueva");
-        btnNuevaCuenta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevaCuentaActionPerformed(evt);
-            }
-        });
-        Cuentas.add(btnNuevaCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(1121, 20, 150, 50));
         Cuentas.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 1260, 10));
-
-        jLabel9.setText("Falta poner algun panel donde muestre la cuenta seleccionada, junto con los botones de seleccionar y borrar, capaz sobre el mismo titulo y poner los botones al lado del boton de nueva cuenta");
-        Cuentas.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 1160, 50));
 
         getContentPane().add(Cuentas, "cuentas");
 
@@ -274,9 +266,17 @@ public class Principal extends javax.swing.JFrame {
                 TableAsientoNuevoMouseClicked(evt);
             }
         });
+        TableAsientoNuevo.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                TableAsientoNuevoPropertyChange(evt);
+            }
+        });
         TableAsientoNuevo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TableAsientoNuevoKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TableAsientoNuevoKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 TableAsientoNuevoKeyTyped(evt);
@@ -510,9 +510,9 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAsientoActionPerformed
 
     private void btnCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuentaActionPerformed
-        // TODO add your handling code here:
         CardLayout c = (CardLayout)getContentPane().getLayout();
         c.show(getContentPane(), "cuentas");
+        llenarCuentas();
     }//GEN-LAST:event_btnCuentaActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
@@ -542,13 +542,6 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBorrarFIlaAsientoActionPerformed
 
-    private void btnNuevaCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaCuentaActionPerformed
-        // TODO add your handling code here:
-        JFrame nc = new NuevaCuenta();
-        nc.setAlwaysOnTop(true);
-        nc.setVisible(true);
-    }//GEN-LAST:event_btnNuevaCuentaActionPerformed
-
     private void TableAsientoNuevoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyTyped
         // TODO add your handling code here:
         int fila = TableAsientoNuevo.getSelectedRow();
@@ -556,23 +549,49 @@ public class Principal extends javax.swing.JFrame {
         TableModel modelo = TableAsientoNuevo.getModel();
         switch(columna){
             case 2:
-            modelo.setValueAt(0,fila,3);
-            break;
+                modelo.setValueAt(0,fila,3);
+                break;
             case 3:
-            modelo.setValueAt(0, fila, 2);
-            break;
+                modelo.setValueAt(0, fila, 2);
+                break;
+            default:
+                break;
         }
     }//GEN-LAST:event_TableAsientoNuevoKeyTyped
 
     private void TableAsientoNuevoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyPressed
-        // TODO add your handling code here:
         KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        if (k.getKeyCode()==evt.getKeyCode() && TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
-            DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
-            tm.addRow(new Object[]{null,null,0,0});
-            TableAsientoNuevo.setModel(tm);
-            Asientos.repaint();
-        }
+        String dato="";
+        //TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1
+        if (k.getKeyCode()==evt.getKeyCode()){
+            /*if (TableAsientoNuevo.getSelectedColumn()==0){
+                //dato=(String) TableAsientoNuevo.getValueAt(TableAsientoNuevo.getSelectedRow(),0);
+                //System.err.println("Dato: "+dato);
+                int i = TableAsientoNuevo.getSelectedRow();
+                String a,b,c;
+                a="";
+                b="";
+                c="";
+                try {
+                    a=(String) TableAsientoNuevo.getModel().getValueAt(i-1,0);
+                    b=(String) TableAsientoNuevo.getModel().getValueAt(i,0);
+                    c=(String) TableAsientoNuevo.getModel().getValueAt(i+1,0);
+                } catch (Exception e) {
+                    System.err.println("Problema al castear");
+                }
+                System.err.println("row-1: "+a);
+                System.err.println("row: "+b);
+                System.err.println("row+1: "+c);      
+                
+            }else{*/
+                if (TableAsientoNuevo.getSelectedRow() == TableAsientoNuevo.getRowCount()-1){
+                    DefaultTableModel tm = (DefaultTableModel) TableAsientoNuevo.getModel();
+                    tm.addRow(new Object[]{null,null,0,0});
+                    TableAsientoNuevo.setModel(tm);
+                    Asientos.repaint();
+                }
+            //}
+        }        
     }//GEN-LAST:event_TableAsientoNuevoKeyPressed
 
     private void TableAsientoNuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableAsientoNuevoMouseClicked
@@ -586,6 +605,19 @@ public class Principal extends javax.swing.JFrame {
 
     private void TableAsientoNuevoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TableAsientoNuevoFocusLost
     }//GEN-LAST:event_TableAsientoNuevoFocusLost
+
+    private void TableAsientoNuevoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TableAsientoNuevoKeyReleased
+        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        String dato;
+        if (TableAsientoNuevo.getSelectedColumn()==0 && k.getKeyCode()==evt.getKeyCode()){
+            dato=(String) TableAsientoNuevo.getValueAt(TableAsientoNuevo.getSelectedRow()-1,0);
+            System.err.println("Dato: "+dato);
+        }
+    }//GEN-LAST:event_TableAsientoNuevoKeyReleased
+
+    private void TableAsientoNuevoPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_TableAsientoNuevoPropertyChange
+        
+    }//GEN-LAST:event_TableAsientoNuevoPropertyChange
 
     
     /**
@@ -629,6 +661,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel Mayores;
     private javax.swing.JTable TableAsientoNuevo;
     private javax.swing.JTable TableAsientosPrevios;
+    private javax.swing.JTable TableCuentas;
     private javax.swing.JButton btnAgregarFilaAsiento;
     private javax.swing.JButton btnAsiento;
     private javax.swing.JButton btnBorrar;
@@ -637,7 +670,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btnFiltrar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnMayores;
-    private javax.swing.JButton btnNuevaCuenta;
     private javax.swing.JButton btnVolver;
     private javax.swing.JButton btnVolver1;
     private javax.swing.JButton btnVolverCuentas;
@@ -655,12 +687,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JLabel lblAsiento1;
     private javax.swing.JLabel lblHasta;
@@ -669,4 +699,54 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollpaneAsientoNuevo;
     private javax.swing.JScrollPane scrollpaneAsientosPrevios;
     // End of variables declaration//GEN-END:variables
+
+    private void llenarCuentas() {
+        ResultSet rs;
+        try {
+            ConexionDB conn = new ConexionDB();
+            conn.connect();
+            rs = conn.todasLasCuentas();
+            DefaultTableModel tm = (DefaultTableModel) TableCuentas.getModel();
+            tm.removeRow(0);
+            conn.close();
+            while (rs.next()) {
+                tm.addRow(new Object[]{
+                    rs.getString("codigoCS"),
+                    rs.getString("nombre"),
+                    rs.getBoolean("recibeSaldo"),
+                    rs.getString("tipo")}
+                );
+            }
+            TableCuentas.setModel(tm);
+            Cuentas.repaint();
+            
+            
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Algo salio mal, problema con la BD");
+        }
+    }
+
+    private void obtenerCuentaDe(String tf) {
+        String dato = tf.trim();
+        int numero = 0;
+        if (isNumeric(dato) == true) {
+            numero = Integer.parseInt(dato);
+            System.out.println("Numero: " + numero);
+        } else {
+            System.out.println("No es un numero");
+        }
+    }
+    
+    public static boolean isNumeric(String cadena) {
+        boolean resultado;
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+        return resultado;
+    }
 }

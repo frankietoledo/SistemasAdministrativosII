@@ -22,17 +22,12 @@ CREATE TABLE cuentasSimples (
 	idCuenta	INTEGER PRIMARY KEY ASC,
 	nombre		VARCHAR  NOT NULL,
 	tipo		VARCHAR(2)  NOT NULL, /*si es activo pasivo r+ o r-*/
-	idMayor		INTEGER,
     	monto		FLOAT NOT NULL,
 	codigoCS	INT NOT NULL UNIQUE,
-	CONSTRAINT idMayor_fk FOREIGN KEY (idMayor) REFERENCES cuentasCompuestas(idCompuestas) ON UPDATE CASCADE ON DELETE CASCADE
+	recibeSaldo	BOOL NOT NULL,
+	idMayor		INTEGER NOT NULL DEFAULT 0,
+	CONSTRAINT idMayor_fk FOREIGN KEY (idMayor) REFERENCES cuentasSimples(idSimple) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE cuentasCompuestas (
-	idCompuesta	INTEGER PRIMARY KEY ASC,
-	nombre		VARCHAR NOT NULL,
-	tipo		VARCHAR(2) NOT NULL,
-	codigoCC		INT NOT NULL UNIQUE
 
-);
 
