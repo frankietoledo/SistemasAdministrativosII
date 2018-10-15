@@ -767,8 +767,10 @@ public class Principal extends javax.swing.JFrame {
             conn.connect();            
             rs = conn.todasLasCuentas();
             DefaultTableModel tm = (DefaultTableModel) TableCuentas.getModel();
-            tm.getDataVector().removeAllElements();
-            tm.fireTableDataChanged();
+            if (tm.getRowCount()>1){
+                tm.getDataVector().removeAllElements();
+                tm.fireTableDataChanged();
+            }
             tm.removeRow(0);
             while (rs.next()) {
                 tm.addRow(new Object[]{

@@ -14,6 +14,6 @@ insert into transacciones (idCuenta, valor, esDebe, idAsiento)
 values (2,45,1, 4);
 
 
-select * from cuentasSimples inner join transacciones on (cuentasSimples.idCuenta = transacciones.cuenta);
+select * from cuentasSimples inner join transacciones on (cuentasSimples.idCuenta = transacciones.idcuenta);
 
 select * from cuentasSimples natural join (asientos natural join transacciones) where cuentasSimples.codigoCS = ?;
