@@ -3,7 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/flynn/Documents/sa2/SistemasAdministrativosII/src/modelo/Transaccion.java</file>
             <file>file:/home/flynn/Documents/sa2/SistemasAdministrativosII/src/modelo/Asiento.java</file>
+            <file>file:/home/flynn/Documents/sa2/SistemasAdministrativosII/src/Vista/SeleccionarCuenta.java</file>
             <file>file:/home/flynn/Documents/sa2/SistemasAdministrativosII/src/modelo/ConexionDB.java</file>
             <file>file:/home/flynn/Documents/sa2/SistemasAdministrativosII/src/Vista/Principal.java</file>
         </group>

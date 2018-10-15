@@ -99,7 +99,7 @@ public class Principal extends javax.swing.JFrame {
         dateChooserCombo1 = new datechooser.beans.DateChooserCombo();
         dateChooserCombo2 = new datechooser.beans.DateChooserCombo();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TableMayores = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -285,14 +285,14 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         TableAsientoNuevo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                TableAsientoNuevoKeyTyped(evt);
+            }
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TableAsientoNuevoKeyPressed(evt);
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TableAsientoNuevoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                TableAsientoNuevoKeyTyped(evt);
             }
         });
         scrollpaneAsientoNuevo.setViewportView(TableAsientoNuevo);
@@ -367,8 +367,8 @@ public class Principal extends javax.swing.JFrame {
 
         dateDesde.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateDesde.setNothingAllowed(false);
-        dateDesde.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
-        dateDesde.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateDesde.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        dateDesde.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         dateDesde.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
         Asientos.add(dateDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 140, 30));
 
@@ -379,8 +379,8 @@ public class Principal extends javax.swing.JFrame {
         } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
             e1.printStackTrace();
         }
-        dateHasta.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
-        dateHasta.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateHasta.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        dateHasta.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Asientos.add(dateHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 140, 30));
 
         btnBorrarFIlaAsiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/12-papelera.png"))); // NOI18N
@@ -432,15 +432,15 @@ public class Principal extends javax.swing.JFrame {
 
         dateChooserCombo1.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo1.setNothingAllowed(false);
-        dateChooserCombo1.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateChooserCombo1.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 130, -1, 30));
 
         dateChooserCombo2.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo2.setNothingAllowed(false);
-        dateChooserCombo2.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
+        dateChooserCombo2.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, -1, 30));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TableMayores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -466,7 +466,7 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(TableMayores);
 
         Mayores.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 1250, 450));
 
@@ -483,6 +483,7 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         CardLayout c = (CardLayout)getContentPane().getLayout();
         c.show(getContentPane(), "mayores");
+        llenarCuentasMayores();
     }//GEN-LAST:event_btnMayoresActionPerformed
 
     private void btnVolverCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverCuentasActionPerformed
@@ -722,6 +723,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTable TableAsientoNuevo;
     private javax.swing.JTable TableAsientosPrevios;
     private javax.swing.JTable TableCuentas;
+    private javax.swing.JTable TableMayores;
     private javax.swing.JButton btnAgregarFilaAsiento;
     private javax.swing.JButton btnAsiento;
     private javax.swing.JButton btnBorrar;
@@ -751,7 +753,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lblAsiento1;
     private javax.swing.JLabel lblHasta;
     private javax.swing.JLabel lblNuevoAsiento;
@@ -802,6 +803,32 @@ public class Principal extends javax.swing.JFrame {
             }
             conn.close();
             TableCuentas.setModel(tm);
+            Cuentas.repaint();            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //para mostrar las cuentas a elegir para generar los mayores
+    private void llenarCuentasMayores() {
+        ResultSet rs;
+        try {
+            ConexionDB conn = new ConexionDB();
+            conn.connect();
+            rs = conn.todasLasCuentas();
+            DefaultTableModel tm = (DefaultTableModel) TableMayores.getModel();
+            tm.getDataVector().removeAllElements();
+            tm.fireTableDataChanged();
+            while (rs.next()) {
+                tm.addRow(new Object[]{
+                    rs.getString("codigoCS"),
+                    rs.getString("nombre"),
+                    false 
+                    }
+                );
+            }
+            conn.close();
+            TableMayores.setModel(tm);
             Cuentas.repaint();            
         } catch (Exception e) {
             e.printStackTrace();
