@@ -127,6 +127,7 @@ public class SeleccionarCuenta extends javax.swing.JFrame{
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         int fila2= TableResultados.getSelectedRow();
+        System.out.println(fila2);
         String numero,concepto;
         if (fila2!=-1){
             concepto = (String) TableResultados.getValueAt(fila2,0);

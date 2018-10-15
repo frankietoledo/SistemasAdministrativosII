@@ -501,11 +501,11 @@ public class Principal extends javax.swing.JFrame {
             java.text.SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
             String date1 = format1.format(desde);
             String date2 = format1.format(hasta);
-             if (desde.before(hasta)){
-                consultarDesdeHasta(date1, date2);
-             }else{
-                 PopUp.warningBox("Orden de fechas incorrecto", "Problema con la fecha");
-             }
+            if (desde.before(hasta)){
+               consultarDesdeHasta(date1, date2);
+            }else{
+                PopUp.warningBox("Orden de fechas incorrecto", "Problema con la fecha");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             //TODO generar dialog con error
@@ -901,6 +901,13 @@ public class Principal extends javax.swing.JFrame {
                 e.printStackTrace();
             }
             asiento1.addTransaccion(t1);
+            
+        }
+       
+        try{
+            asiento1.save();
+        }catch(Exception e){
+            System.err.println(e.getMessage());
         }
     }
 }
