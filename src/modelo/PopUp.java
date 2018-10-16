@@ -19,5 +19,8 @@ public class PopUp
     {
         JOptionPane.showMessageDialog(null, infoMessage, "Error: " + titleBar, JOptionPane.ERROR_MESSAGE);
     }
+    public static void InfoBox(String infoMessage, String titleBar){
+        JOptionPane.showMessageDialog(null, infoMessage,titleBar, JOptionPane.INFORMATION_MESSAGE);
+    }
 }         
 

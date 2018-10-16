@@ -41,7 +41,7 @@ public class Principal extends javax.swing.JFrame {
 
     List<Integer> eliminar = new ArrayList<>();
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-
+    private ArrayList<Integer> codCuentas = new ArrayList<>();
 
     /**
      * Creates new form Principal
@@ -448,14 +448,14 @@ public class Principal extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Codigo", "Cuenta", "Mayor"
+                "Mayor", "Codigo", "Cuenta"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Boolean.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                true, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -466,12 +466,27 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        TableMayores.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(TableMayores);
+        if (TableMayores.getColumnModel().getColumnCount() > 0) {
+            TableMayores.getColumnModel().getColumn(0).setMinWidth(50);
+            TableMayores.getColumnModel().getColumn(0).setPreferredWidth(50);
+            TableMayores.getColumnModel().getColumn(0).setMaxWidth(100);
+            TableMayores.getColumnModel().getColumn(1).setMinWidth(100);
+            TableMayores.getColumnModel().getColumn(1).setPreferredWidth(100);
+            TableMayores.getColumnModel().getColumn(1).setMaxWidth(150);
+            TableMayores.getColumnModel().getColumn(2).setPreferredWidth(200);
+        }
 
         Mayores.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 1250, 450));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/11-pdf.png"))); // NOI18N
-        jButton1.setText(" Generar PDF");
+        jButton1.setText("Generar Mayores");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         Mayores.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 640, -1, -1));
 
         getContentPane().add(Mayores, "mayores");
@@ -680,6 +695,21 @@ public class Principal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        for (int i =0; i< TableMayores.getRowCount(); i++){
+            try {
+                Boolean isChecked = Boolean.valueOf(TableMayores.getValueAt(i, 0).toString());
+                if (isChecked){
+                    codCuentas.add(Integer.valueOf(TableMayores.getValueAt(i, 1).toString()));
+                }
+            } catch (Exception e) {
+                System.err.println("Se encontro un nulo al buscar un boolean"+TableMayores.getValueAt(i,1));
+            }
+        }
+        armarMayores(codCuentas);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -821,9 +851,9 @@ public class Principal extends javax.swing.JFrame {
             tm.fireTableDataChanged();
             while (rs.next()) {
                 tm.addRow(new Object[]{
+                    false,
                     rs.getString("codigoCS"),
-                    rs.getString("nombre"),
-                    false 
+                    rs.getString("nombre")
                     }
                 );
             }
@@ -936,5 +966,70 @@ public class Principal extends javax.swing.JFrame {
         }catch(Exception e){
             System.err.println(e.getMessage());
         }
+    }
+
+    private void armarMayores(ArrayList<Integer> codCuentas2) {
+        ReporteMayores repoM= new ReporteMayores();
+        ResultSet rs;
+        String text = "";
+        repoM.getjText().append("                                             Nombre o Razon Social\n");
+        repoM.getjText().append("                                             cuil 0-00000000-0\n");
+        repoM.getjText().append("                                             Direccion 1234 calle Fantasia\n\n\n");
+        repoM.getjText().append("             Libro de Mayores\n\n");
+        
+        for (Integer i:codCuentas2){
+            System.out.println(codCuentas2);
+            float montoAcumulado= 0;
+            boolean negar = false;
+            
+            try {
+                
+                ConexionDB cn = new ConexionDB();
+                cn.connect();
+                rs = cn.generarMayor(i);
+                if(rs.next()){
+                    repoM.getjText().append("___________________________________________________\n");
+                    repoM.getjText().append("    Cuenta: "+rs.getString("nombre")+" ("+rs.getString("codigoCS")+")\n");
+                    repoM.getjText().append("___________________________________________________\n");
+                    repoM.getjText().append("     Debe                  |          Haber        \n\n");
+                    
+                    negar = (rs.getString("tipo").equals("Pasivo") ||
+                                      rs.getString("tipo").equals("Patrimonio Neto"));
+                    do{
+                        if(rs.getBoolean("esDebe") ){
+                            text = rs.getString("valor")+"                        "+"\n";
+                            System.out.println(text+"\n");
+                            if (negar){
+                                montoAcumulado -= rs.getFloat("valor");
+                            }else{
+                                montoAcumulado += rs.getFloat("valor");
+                            }
+                        }else{
+                            text = "                                    "+rs.getString("valor")+"\n";
+                            System.out.println(text);
+                            if (negar){
+                                montoAcumulado += rs.getFloat("valor");
+                            }else{
+                                montoAcumulado -= rs.getFloat("valor");
+                                }    
+                        }
+                        repoM.getjText().append(text);
+                    }while(rs.next());
+                }
+                
+                cn.close();
+            }catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            System.out.println("____________________________________\n");
+            System.out.println(""+montoAcumulado+"\n");
+            repoM.getjText().append("----------------------------------------------\n");
+            repoM.getjText().append("    "+String.valueOf(montoAcumulado));
+            repoM.getjText().append("\n\n");
+            System.out.println("\n\n");
+        }
+        repoM.setVisible(true);
+        codCuentas.clear();
+    
     }
 }

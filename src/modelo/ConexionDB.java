@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class ConexionDB {
 	//private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
-	private String url= "/home/flynn/Documents/sa2/SistemasAdministrativosII/sa2.db";
+	private String url= "/mnt/DATA/Sistemas Administrativos 2/sa2/SistemasAdministrativosII/sa2.db";
     
 	public Connection connect;
 	
@@ -100,4 +100,16 @@ public class ConexionDB {
 		}
 		return result;
 	}
+        public ResultSet generarMayor(int codigoCuenta){
+            ResultSet result = null;
+            try {
+                String sql = "select * from cuentasSimples natural join (asientos natural join transacciones) where cuentasSimples.codigoCS = ?";
+                PreparedStatement st = connect.prepareStatement(sql);
+                st.setInt(1, codigoCuenta);
+                result = st.executeQuery();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            return result;
+        }
 }
