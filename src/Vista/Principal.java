@@ -1023,11 +1023,12 @@ public class Principal extends javax.swing.JFrame {
                     repoM.getjText().append("___________________________________________________\n");
                     repoM.getjText().append("    Cuenta: "+rs.getString("nombre")+" ("+rs.getString("codigoCS")+")\n");
                     repoM.getjText().append("___________________________________________________\n");
-                    repoM.getjText().append("     Debe                  |          Haber        \n\n");
+                    repoM.getjText().append("Id Asiento|     Debe                  |          Haber        \n\n");
                     
                     negar = (rs.getString("tipo").equals("Pasivo") ||
                                       rs.getString("tipo").equals("Patrimonio Neto"));
                     do{
+                        repoM.getjText().append("      "+rs.getInt("idAsiento")+"      ");
                         if(rs.getBoolean("esDebe") ){
                             text = rs.getString("valor")+"                        "+"\n";
                             System.out.println(text+"\n");
@@ -1054,9 +1055,9 @@ public class Principal extends javax.swing.JFrame {
                 System.err.println(e.getMessage());
             }
             System.out.println("____________________________________\n");
-            System.out.println(""+montoAcumulado+"\n");
+            System.out.println("Total:      "+montoAcumulado+"\n");
             repoM.getjText().append("----------------------------------------------\n");
-            repoM.getjText().append("    "+String.valueOf(montoAcumulado));
+            repoM.getjText().append("Total:      "+String.valueOf(montoAcumulado));
             repoM.getjText().append("\n\n");
             System.out.println("\n\n");
         }

@@ -38,6 +38,7 @@ public class AsientoVista extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Detalle asiento");
@@ -97,6 +98,7 @@ public class AsientoVista extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 380, 310, 60));
         getContentPane().add(filler2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 460, -1, -1));
+        getContentPane().add(filler3, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 180, 30, 60));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -110,6 +112,7 @@ public class AsientoVista extends javax.swing.JFrame {
     private javax.swing.JTable TableAsientosDetalle;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
