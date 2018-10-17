@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javafx.scene.input.KeyCode;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableModel;
 import javax.swing.table.DefaultTableModel;
@@ -104,6 +105,7 @@ public class Principal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistemas Administrativos II");
+        setLocation(new java.awt.Point(51, 181));
         setMinimumSize(new java.awt.Dimension(1300, 700));
         setName("VentanaPrincipal"); // NOI18N
         setResizable(false);
@@ -238,6 +240,11 @@ public class Principal extends javax.swing.JFrame {
         });
         TableAsientosPrevios.setAutoscrolls(false);
         TableAsientosPrevios.setRowHeight(24);
+        TableAsientosPrevios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableAsientosPreviosMouseClicked(evt);
+            }
+        });
         scrollpaneAsientosPrevios.setViewportView(TableAsientosPrevios);
 
         Asientos.add(scrollpaneAsientosPrevios, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 460, 510));
@@ -367,8 +374,8 @@ public class Principal extends javax.swing.JFrame {
 
         dateDesde.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateDesde.setNothingAllowed(false);
-        dateDesde.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
-        dateDesde.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dateDesde.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
+        dateDesde.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         dateDesde.setBehavior(datechooser.model.multiple.MultyModelBehavior.SELECT_SINGLE);
         Asientos.add(dateDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 140, 30));
 
@@ -379,8 +386,8 @@ public class Principal extends javax.swing.JFrame {
         } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
             e1.printStackTrace();
         }
-        dateHasta.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
-        dateHasta.setNavigateFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dateHasta.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 18));
+        dateHasta.setNavigateFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         Asientos.add(dateHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 140, 30));
 
         btnBorrarFIlaAsiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/12-papelera.png"))); // NOI18N
@@ -432,12 +439,12 @@ public class Principal extends javax.swing.JFrame {
 
         dateChooserCombo1.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo1.setNothingAllowed(false);
-        dateChooserCombo1.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dateChooserCombo1.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 130, -1, 30));
 
         dateChooserCombo2.setCalendarPreferredSize(new java.awt.Dimension(350, 280));
         dateChooserCombo2.setNothingAllowed(false);
-        dateChooserCombo2.setFieldFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 14));
+        dateChooserCombo2.setFieldFont(new java.awt.Font("Roboto", java.awt.Font.PLAIN, 14));
         Mayores.add(dateChooserCombo2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, -1, 30));
 
         TableMayores.setModel(new javax.swing.table.DefaultTableModel(
@@ -545,6 +552,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsientoActionPerformed
            CardLayout c = (CardLayout)getContentPane().getLayout();
            c.show(getContentPane(), "asientos");
+           cargarAsientosHistoricos();
     }//GEN-LAST:event_btnAsientoActionPerformed
 
     private void btnCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuentaActionPerformed
@@ -709,6 +717,22 @@ public class Principal extends javax.swing.JFrame {
         }
         armarMayores(codCuentas);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void TableAsientosPreviosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableAsientosPreviosMouseClicked
+        // Detectar doble click sobre columna id
+        int fila = TableAsientosPrevios.getSelectedRow();
+        String idAsiento="";
+        if (evt.getClickCount() == 2 && fila != -1) {
+            idAsiento =TableAsientosPrevios.getValueAt(fila, 0).toString();
+            AsientoVista av = new AsientoVista();
+            try {
+                av.generarTabla(idAsiento);
+            } catch (SQLException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            av.setVisible(true);
+        }
+    }//GEN-LAST:event_TableAsientosPreviosMouseClicked
 
     
     /**
@@ -963,8 +987,16 @@ public class Principal extends javax.swing.JFrame {
        
         try{
             asiento1.save();
+            PopUp.InfoBox("Asiento guardado correctamente","Todo piola");
+            DefaultTableModel dm = (DefaultTableModel)TableAsientoNuevo.getModel();
+            dm.getDataVector().removeAllElements();
+            dm.fireTableDataChanged();
+            //Esto es una negrada pero anda
+            btnAgregarFilaAsientoActionPerformed(new ActionEvent(this,
+            ActionEvent.ACTION_PERFORMED, "Hola"));
         }catch(Exception e){
             System.err.println(e.getMessage());
+            PopUp.warningBox("Problema al guardar asiento", "Cago la Base de datos");
         }
     }
 
@@ -1031,5 +1063,17 @@ public class Principal extends javax.swing.JFrame {
         repoM.setVisible(true);
         codCuentas.clear();
     
+    }
+
+    private void cargarAsientosHistoricos() {
+        try {
+            Date hoy = Calendar.getInstance().getTime();
+            java.text.SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
+            String fecha= format1.format(hoy);
+            consultarDesdeHasta(fecha,fecha);
+            
+        } catch (Exception e) {
+            PopUp.warningBox("Problema al cargar los asientos del dia de hoy", "Error de asientos");
+        }
     }
 }

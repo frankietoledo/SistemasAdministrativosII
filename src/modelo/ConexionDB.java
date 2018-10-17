@@ -4,8 +4,8 @@ import java.sql.*;
 
 public class ConexionDB {
 	//private String url= "E:\\Mis Documentos y Mas\\Documents\\NetBeansProjects\\SistemasAdministrativosII\\sa2.db";
-	private String url= "/mnt/DATA/Sistemas Administrativos 2/sa2/SistemasAdministrativosII/sa2.db";
-    
+	//private String url= "/mnt/DATA/Sistemas Administrativos 2/sa2/SistemasAdministrativosII/sa2.db";
+        private String url= "/home/frank/NetBeansProjects/SistemasAdministrativosII/sa2.db";
 	public Connection connect;
 	
 	public void connect(){
@@ -43,6 +43,20 @@ public class ConexionDB {
 		return this.connect;
 	}
 	
+	//busca asiento por idAsiento
+	public ResultSet transaccionesPorIdAsiento(String idAsiento) {
+            ResultSet result = null;
+            try {
+                PreparedStatement st = connect.prepareStatement("select * from transacciones inner join cuentasSimples on transacciones.idCuenta=cuentasSimples.idCuenta where transacciones.idAsiento=?");//
+                st.setString(1,idAsiento);
+                result = st.executeQuery();
+
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+
+            }
+            return result;    
+	}
 	
 	//busca asientos entre 2 fechas
 	public ResultSet mostrarAsientosPor(String fechaInicio, String fechaFin) {

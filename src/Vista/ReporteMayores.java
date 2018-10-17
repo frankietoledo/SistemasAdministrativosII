@@ -51,6 +51,7 @@ public class ReporteMayores extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mayores Pdf");
         setAlwaysOnTop(true);
+        setLocation(new java.awt.Point(200, 150));
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
 
